@@ -103,9 +103,10 @@ span.psw {
 </style>
 
 <script setup>
-import router from '../router';
 import { ref } from "vue"
-import getBrowserFingerprint from '../tools/get-browser-fingerprint.js';
+
+import router from '@/router';
+import getBrowserFingerprint from '@/tools/get-browser-fingerprint.js';
 
 const username = ref('')
 const password = ref('')

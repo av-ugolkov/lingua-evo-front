@@ -22,7 +22,7 @@
                 |
                 <router-link to="/account" class="panelBtn">{{ accountName }}</router-link>
                 |
-                <router-link to="/logout" class="panelBtn">Logout</router-link>
+                <router-link to="/" @click="logout()" class="panelBtn">Logout</router-link>
             </div>
 
         </div>
@@ -105,7 +105,9 @@ body {
 
 <script setup>
 import { onMounted, ref } from "vue"
-import getBrowserFingerprint from '../tools/get-browser-fingerprint'
+
+import getBrowserFingerprint from '@/tools/get-browser-fingerprint'
+import router from "@/router";
 
 const localStorage = window.localStorage
 const accountName = ref('')
@@ -142,5 +144,10 @@ onMounted(async () => {
     accountName.value = payload["user_id"]
 })
 
+
+function logout() {
+    localStorage.removeItem('access_token')
+    router.push('/')
+}
 
 </script>

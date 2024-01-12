@@ -1,19 +1,20 @@
 <template>
-    <form id="signupPanel" method="post" action="/signup">
+    <form id="sign-up-panel" method="post">
         <div class="img_container">
             <img src="/src/components/icons/logo-grey.png" alt="Avatar" class="avatar">
         </div>
         <div class="container">
             <label for=email><b>Email</b></label>
-            <input id=email name=email type="text" placeholder="Enter Email" required>
+            <input id=email v-model=email type="text" autocomplete="email" placeholder="Enter Email" required>
 
             <label for=username><b>Username</b></label>
-            <input id=username name=username type="text" placeholder="Enter Username" required>
+            <input id=username v-model=username type="text" placeholder="Enter Username" required>
 
             <label for=password><b>Password</b></label>
-            <input id=password name=password type="password" placeholder="Enter Password" required>
+            <input id=password v-model=password type="password" placeholder="Enter Password" required>
 
-            <button type="submit">Create</button>
+            <button @click="signin()" type="button">Create</button>
+            <button @click="$router.push('/');" type="button" class="cancel-btn">Cancel</button>
         </div>
     </form>
 </template>
@@ -53,8 +54,7 @@ button {
 }
 
 /* Extra style for the cancel button (red) */
-.cancel_btn {
-    width: auto;
+.cancel-btn {
     padding: 10px 18px;
     background-color: #f44336;
 }
@@ -96,34 +96,37 @@ span.psw {
 </style>
 
 <script setup>
-// console.log("Script Auth")
+import { ref } from "vue"
 
-// let authPanel = document.getElementById("signupPanel");
+import router from '../router';
+import getBrowserFingerprint from '../tools/get-browser-fingerprint.js';
 
-// authPanel.addEventListener("submit", (e) => {
-//     e.preventDefault()
+let authPanel = document.getElementById("signupPanel");
 
-//     let responseStatus = 404
-//     let email = document.getElementById("email")
-//     let username = document.getElementById("username")
-//     let password = document.getElementById("password")
-//     fetch("signup", {
-//         method: "post",
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ email: email.value, username: username.value, password: password.value })
-//     })
-//         .then((response) => response.json())
-//         .then((data) => {
-//             if (responseStatus == 201) {
-//                 console.log('Success:', data)
-//                 window.open(data["url"], "_self")
-//             }
-//         })
-//         .catch((err) => {
-//             console.error('Error:', err)
-//         });
-// })
+const email = ref("")
+const username = ref("")
+const password = ref("")
+
+function signin() {
+    let responseStatus = 404
+    fetch("http://localhost:5000/auth/signup", {
+        method: "post",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Fingerprint': getBrowserFingerprint(),
+        },
+        body: JSON.stringify({ email: email.value, username: username.value, password: password.value })
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (responseStatus == 201) {
+                console.log('Success:', data)
+                router.push('/')
+            }
+        })
+        .catch((err) => {
+            console.error('Error:', err)
+        });
+}
 </script>
