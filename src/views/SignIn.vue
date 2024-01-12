@@ -114,6 +114,7 @@ const password = ref('')
 function signin() {
     fetch('http://localhost:5000/auth/signin', {
         method: 'post',
+        credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',

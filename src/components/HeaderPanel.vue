@@ -18,7 +18,7 @@
                 <router-link to="/signin" class="panelBtn">Sign In</router-link>
             </div>
             <div v-else class="border">
-                <router-link to="/dictionary" class="panelBtn">Dictionary</router-link>
+                <router-link to="/dictionaries" class="panelBtn">Dictionary</router-link>
                 |
                 <router-link to="/account" class="panelBtn">{{ accountName }}</router-link>
                 |
@@ -113,21 +113,35 @@ const localStorage = window.localStorage
 const accountName = ref('')
 
 onMounted(async () => {
+    fetch("http://localhost:5000/get_current_languages", {
+        method: "get",
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    }).catch(error => {
+        console.error('error:', error);
+    })
+
+
     let token = localStorage.getItem('access_token')
     if (token == null) {
         return
     }
-
     let payload = JSON.parse(atob(token.split(".")[1]));
     let exp = payload["exp"]
-    if (Date.now() > exp * 1000) {
-        await fetch("/auth/refresh", {
-            method: "post",
+    let dateNow = Date.now()
+    if (dateNow > exp * 1000) {
+        await fetch("http://localhost:5000/auth/refresh", {
+            method: "get",
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Fingerprint': getBrowserFingerprint(),
-            }
+                'Authorization': 'Bearer ' + token,
+            },
         })
             .then(response => {
                 return response.json()
@@ -141,7 +155,25 @@ onMounted(async () => {
                 console.error('error:', error);
             })
     }
-    accountName.value = payload["user_id"]
+
+    fetch("http://localhost:5000/user/get_by_id", {
+        method: "get",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Fingerprint': getBrowserFingerprint(),
+            'Authorization': 'Bearer ' + token
+        }
+    })
+        .then(response => {
+            return response.json()
+        })
+        .then(data => {
+            accountName.value = data['name'];
+        })
+        .catch(error => {
+            console.error('error:', error);
+        })
 })
 
 

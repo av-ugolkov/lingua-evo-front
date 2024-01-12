@@ -5,6 +5,8 @@ import SignInVue from "./views/SignIn.vue";
 import SignUpVue from "./views/SignUp.vue";
 import ContactVue from "./views/Contact.vue";
 import AboutVue from "./views/About.vue";
+import AccountVue from "./views/Account.vue";
+import DictionariesVue from "./views/Dictionaries.vue";
 
 export default createRouter({
     history: createWebHistory(),
@@ -33,6 +35,16 @@ export default createRouter({
             path: "/about",
             name: "About",
             component: AboutVue
+        },
+        {
+            path: "/account",
+            name: "Account",
+            component: AccountVue
+        },
+        {
+            path: "/dictionaries",
+            name: "Dictionaries",
+            component: DictionariesVue
         },
         // {
         //     path: "/people",
