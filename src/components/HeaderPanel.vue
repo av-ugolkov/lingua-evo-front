@@ -139,8 +139,7 @@ onMounted(async () => {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Fingerprint': getBrowserFingerprint(),
-                'Authorization': 'Bearer ' + token,
+                'Fingerprint': getBrowserFingerprint()
             },
         })
             .then(response => {
@@ -178,8 +177,26 @@ onMounted(async () => {
 
 
 function logout() {
-    localStorage.removeItem('access_token')
-    router.push('/')
+    let token = localStorage.getItem('access_token')
+    if (token == null) {
+        location.reload()
+        return
+    }
+
+    fetch("http://localhost:5000/auth/logout", {
+        method: "get",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Fingerprint': getBrowserFingerprint(),
+            'Authorization': 'Bearer ' + token
+        }
+    }).catch(error => {
+        console.error('error:', error);
+    }).finally(() => {
+        localStorage.removeItem('access_token')
+        location.reload()
+    })
 }
 
 </script>

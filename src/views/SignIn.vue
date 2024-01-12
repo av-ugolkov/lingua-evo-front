@@ -120,8 +120,7 @@ function signin() {
             'Content-Type': 'application/json',
             'Authorization': "Basic " + btoa(username.value + ':' + password.value),
             'Fingerprint': getBrowserFingerprint(),
-        },
-        body: JSON.stringify({})
+        }
     }).then((response) => {
         return response.json();
     }).then((data) => {
