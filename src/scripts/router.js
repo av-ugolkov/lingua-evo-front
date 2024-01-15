@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import MainPageVue from "./views/MainPage.vue";
-import SignInVue from "./views/SignIn.vue";
-import SignUpVue from "./views/SignUp.vue";
-import ContactVue from "./views/Contact.vue";
-import AboutVue from "./views/About.vue";
-import AccountVue from "./views/Account.vue";
-import DictionariesVue from "./views/Dictionaries.vue";
+import MainPageVue from "@/views/MainPage.vue";
+import SignInVue from "@/views/SignIn.vue";
+import SignUpVue from "@/views/SignUp.vue";
+import ContactVue from "@/views/Contact.vue";
+import AboutVue from "@/views/About.vue";
+import AccountVue from "@/views/Account.vue";
+import DictionariesVue from "@/views/Dictionaries.vue";
+import DictionaryCardVue from "@/components/DictionaryCard.vue";
 
 export default createRouter({
     history: createWebHistory(),
@@ -45,6 +46,12 @@ export default createRouter({
             path: "/dictionaries",
             name: "Dictionaries",
             component: DictionariesVue
+        },
+        {
+            path: "/dictionaries/:id",
+            name: "dictionary",
+            component: DictionaryCardVue,
+            props: route => ({ id: route.params.id })
         },
         // {
         //     path: "/people",

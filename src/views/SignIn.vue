@@ -1,3 +1,34 @@
+<script setup>
+import { ref } from "vue"
+
+import router from '@/scripts/router';
+import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint.js';
+
+const username = ref('')
+const password = ref('')
+
+function signin() {
+    fetch('http://localhost:5000/auth/signin', {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + btoa(username.value + ':' + password.value),
+            'Fingerprint': getBrowserFingerprint(),
+        }
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        let token = data['access_token'];
+        localStorage.setItem('access_token', token);
+        router.push('/');
+    }).catch((error) => {
+        console.error('error:', error);
+    });
+}
+</script>
+
 <template>
     <form id="sign_in_panel" method="post">
         <div class="img_container">
@@ -101,34 +132,3 @@ span.psw {
     }
 }
 </style>
-
-<script setup>
-import { ref } from "vue"
-
-import router from '@/router';
-import getBrowserFingerprint from '@/tools/get-browser-fingerprint.js';
-
-const username = ref('')
-const password = ref('')
-
-function signin() {
-    fetch('http://localhost:5000/auth/signin', {
-        method: 'post',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': "Basic " + btoa(username.value + ':' + password.value),
-            'Fingerprint': getBrowserFingerprint(),
-        }
-    }).then((response) => {
-        return response.json();
-    }).then((data) => {
-        let token = data['access_token'];
-        localStorage.setItem('access_token', token);
-        router.push('/');
-    }).catch((error) => {
-        console.error('error:', error);
-    });
-}
-</script>

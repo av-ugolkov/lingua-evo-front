@@ -1,3 +1,72 @@
+<script setup>
+import { onMounted, ref } from "vue"
+
+import refreshToken from '@/scripts/middleware/auth'
+import require from '@/scripts/require'
+
+const localStorage = window.localStorage
+const accountName = ref('')
+
+onMounted(async () => {
+    require('/get_current_languages',
+        {
+            method: 'get',
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).catch(error => {
+            console.error('error:', error);
+        })
+
+    refreshToken(function (bearerToken, finger) {
+        require("/user/get_by_id", {
+            method: "get",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Fingerprint': finger,
+                'Authorization': bearerToken
+            }
+        })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                accountName.value = data['name'];
+            })
+            .catch(error => {
+                console.error('error:', error);
+            })
+    })
+})
+
+
+function logout() {
+    let token = localStorage.getItem('access_token')
+    if (token == null) {
+        location.reload()
+        return
+    }
+
+    fetch("http://localhost:5000/auth/logout", {
+        method: "get",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Fingerprint': getBrowserFingerprint(),
+            'Authorization': 'Bearer ' + token
+        }
+    }).catch(error => {
+        console.error('error:', error);
+    }).finally(() => {
+        localStorage.removeItem('access_token')
+        location.reload()
+    })
+}
+</script>
+
 <template>
     <nav class="navbar">
         <div class="left-side">
@@ -101,102 +170,4 @@ body {
         }
     }
 }
-</style>
-
-<script setup>
-import { onMounted, ref } from "vue"
-
-import getBrowserFingerprint from '@/tools/get-browser-fingerprint'
-import router from "@/router";
-
-const localStorage = window.localStorage
-const accountName = ref('')
-
-onMounted(async () => {
-    fetch("http://localhost:5000/get_current_languages", {
-        method: "get",
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        }
-    }).catch(error => {
-        console.error('error:', error);
-    })
-
-
-    let token = localStorage.getItem('access_token')
-    if (token == null) {
-        return
-    }
-    let payload = JSON.parse(atob(token.split(".")[1]));
-    let exp = payload["exp"]
-    let dateNow = Date.now()
-    if (dateNow > exp * 1000) {
-        await fetch("http://localhost:5000/auth/refresh", {
-            method: "get",
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Fingerprint': getBrowserFingerprint()
-            },
-        })
-            .then(response => {
-                return response.json()
-            })
-            .then(data => {
-                token = data['access_token'];
-                localStorage.setItem('access_token', token);
-            })
-            .catch(error => {
-                localStorage.removeItem('access_token')
-                console.error('error:', error);
-            })
-    }
-
-    fetch("http://localhost:5000/user/get_by_id", {
-        method: "get",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Fingerprint': getBrowserFingerprint(),
-            'Authorization': 'Bearer ' + token
-        }
-    })
-        .then(response => {
-            return response.json()
-        })
-        .then(data => {
-            accountName.value = data['name'];
-        })
-        .catch(error => {
-            console.error('error:', error);
-        })
-})
-
-
-function logout() {
-    let token = localStorage.getItem('access_token')
-    if (token == null) {
-        location.reload()
-        return
-    }
-
-    fetch("http://localhost:5000/auth/logout", {
-        method: "get",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Fingerprint': getBrowserFingerprint(),
-            'Authorization': 'Bearer ' + token
-        }
-    }).catch(error => {
-        console.error('error:', error);
-    }).finally(() => {
-        localStorage.removeItem('access_token')
-        location.reload()
-    })
-}
-
-</script>
+</style>@/scripts/middleware/auth-middleware.js

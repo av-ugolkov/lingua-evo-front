@@ -1,21 +1,14 @@
-<template></template>
-
-<style scoped></style>
-
 <script setup>
-import { onMounted } from 'vue';
-
-
-
-
-onMounted(() => {
-    getDictionaries()
-})
-
-function getDictionaries() {
-    fetch("/account/dictionaries", {
-
-    })
-}
-
+import HeaderPanel from '@/components/HeaderPanel.vue';
+import DictionariesList from '@/components/DictionariesList.vue';
 </script>
+
+<template>
+    <div>
+        <HeaderPanel />
+    </div>
+
+    <div>
+        <DictionariesList />
+    </div>
+</template>

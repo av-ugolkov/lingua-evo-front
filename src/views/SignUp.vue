@@ -1,3 +1,37 @@
+<script setup>
+import { ref } from "vue"
+
+import router from '@/scripts/router';
+import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint.js';
+
+const email = ref("")
+const username = ref("")
+const password = ref("")
+
+function signin() {
+    let responseStatus = 404
+    fetch("http://localhost:5000/auth/signup", {
+        method: "post",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Fingerprint': getBrowserFingerprint(),
+        },
+        body: JSON.stringify({ email: email.value, username: username.value, password: password.value })
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (responseStatus == 201) {
+                console.log('Success:', data)
+                router.push('/')
+            }
+        })
+        .catch((err) => {
+            console.error('Error:', err)
+        });
+}
+</script>
+
 <template>
     <form id="sign-up-panel" method="post">
         <div class="img_container">
@@ -94,39 +128,3 @@ span.psw {
     }
 }
 </style>
-
-<script setup>
-import { ref } from "vue"
-
-import router from '../router';
-import getBrowserFingerprint from '../tools/get-browser-fingerprint.js';
-
-let authPanel = document.getElementById("signupPanel");
-
-const email = ref("")
-const username = ref("")
-const password = ref("")
-
-function signin() {
-    let responseStatus = 404
-    fetch("http://localhost:5000/auth/signup", {
-        method: "post",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Fingerprint': getBrowserFingerprint(),
-        },
-        body: JSON.stringify({ email: email.value, username: username.value, password: password.value })
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (responseStatus == 201) {
-                console.log('Success:', data)
-                router.push('/')
-            }
-        })
-        .catch((err) => {
-            console.error('Error:', err)
-        });
-}
-</script>

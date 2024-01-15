@@ -31,7 +31,7 @@
 </style>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 let interval = null
 const loading = ref(true);
@@ -39,13 +39,13 @@ const error = ref(null);
 const word = ref("");
 
 onMounted(() => {
-  created()
-})
-
-function created() {
   fetchData();
   interval = setInterval(fetchData, 60000);
-}
+})
+
+onUnmounted(() => {
+  clearInterval(interval);
+})
 
 function fetchData() {
   fetch('http://localhost:5000/word/get_random', {
