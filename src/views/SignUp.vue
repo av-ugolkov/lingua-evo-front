@@ -3,6 +3,7 @@ import { ref } from "vue"
 
 import router from '@/scripts/router';
 import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint.js';
+import require from "@/scripts/require";
 
 const email = ref("")
 const username = ref("")
@@ -10,7 +11,7 @@ const password = ref("")
 
 function signin() {
     let responseStatus = 404
-    fetch("http://localhost:5000/auth/signup", {
+    require("/auth/signup", {
         method: "post",
         headers: {
             'Accept': 'application/json',

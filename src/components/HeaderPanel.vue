@@ -20,13 +20,13 @@ onMounted(async () => {
             console.error('error:', error);
         })
 
-    refreshToken(function (bearerToken, finger) {
+    refreshToken(function (bearerToken, fingerprint) {
         require("/user/get_by_id", {
             method: "get",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Fingerprint': finger,
+                'Fingerprint': fingerprint,
                 'Authorization': bearerToken
             }
         })
@@ -50,19 +50,21 @@ function logout() {
         return
     }
 
-    fetch("http://localhost:5000/auth/logout", {
-        method: "get",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Fingerprint': getBrowserFingerprint(),
-            'Authorization': 'Bearer ' + token
-        }
-    }).catch(error => {
-        console.error('error:', error);
-    }).finally(() => {
-        localStorage.removeItem('access_token')
-        location.reload()
+    refreshToken(function (bearerToken, fingerprint) {
+        require("/auth/logout", {
+            method: "get",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Fingerprint': fingerprint,
+                'Authorization': bearerToken,
+            }
+        }).catch(error => {
+            console.error('error:', error);
+        }).finally(() => {
+            localStorage.removeItem('access_token')
+            location.reload()
+        })
     })
 }
 </script>

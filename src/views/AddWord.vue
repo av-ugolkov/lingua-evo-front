@@ -42,6 +42,8 @@
 <script setup>
 import { reactive } from 'vue';
 
+import require from '@/scripts/require';
+
 
 const newWord = reactive({
     nativeWord: "",
@@ -53,7 +55,7 @@ const newWord = reactive({
 })
 
 function addWord() {
-    fetch("add_word", {
+    require("add_word", {
         method: "post",
         headers: {
             'Accept': 'application/json',

@@ -3,12 +3,13 @@ import { ref } from "vue"
 
 import router from '@/scripts/router';
 import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint.js';
+import require from "@/scripts/require";
 
 const username = ref('')
 const password = ref('')
 
 function signin() {
-    fetch('http://localhost:5000/auth/signin', {
+    require('/auth/signin', {
         method: 'post',
         credentials: 'include',
         headers: {
