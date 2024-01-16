@@ -6,6 +6,7 @@ import require from '@/scripts/require'
 function refreshToken(next) {
     let token = localStorage.getItem('access_token')
     if (token == null) {
+        next(null, null)
         return
     }
     let payload = JSON.parse(atob(token.split(".")[1]));
@@ -26,7 +27,6 @@ function refreshToken(next) {
         }).then(data => {
             token = data['access_token'];
             localStorage.setItem('access_token', token);
-            console.log('access token: ' + token);
             next('Bearer ' + token, finger)
         }).catch(error => {
             localStorage.removeItem('access_token')
@@ -36,6 +36,7 @@ function refreshToken(next) {
             } else {
                 router.push('/')
             }
+            next(null, null)
         })
     } else {
         next('Bearer ' + token, finger)

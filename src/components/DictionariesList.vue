@@ -13,6 +13,9 @@ onMounted(() => {
 
 function getDictionaries() {
     refreshToken(function (bearerToken, fingerprint) {
+        if (bearerToken == null || fingerprint == null) {
+            return
+        }
         require("/account/dictionaries", {
             method: "get",
             headers: {

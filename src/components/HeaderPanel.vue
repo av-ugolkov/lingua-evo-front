@@ -21,6 +21,9 @@ onMounted(async () => {
         })
 
     refreshToken(function (bearerToken, fingerprint) {
+        if (bearerToken == null || fingerprint == null) {
+            return
+        }
         require("/user/get_by_id", {
             method: "get",
             headers: {

@@ -14,6 +14,10 @@ onMounted(() => {
 
 function getDictionary() {
   refreshToken(function (bearerToken, fingerprint) {
+    if (bearerToken == null || fingerprint == null) {
+      return
+    }
+
     let url = "/account/dictionary/" + props.name
     require(url, {
       method: "post",
@@ -27,7 +31,7 @@ function getDictionary() {
     }).then((response) => {
       return response.json();
     }).then((data) => {
-      words.value = data
+      words.value = data.words
     }).catch((error) => {
       console.error('error:', error);
     })
@@ -61,8 +65,8 @@ function openDictionary() {
 <template>
   <div class="item-title">{{ name }}</div>
   <div class="item-content">
-    <li v-for="n in 9">
-      <p v-if="words[n]">{{ words[n] }}</p>
+    <li v-for="word in words">
+      <p v-if="word">{{ word }}</p>
     </li>
     <p v-if="words.length > 9">...</p>
   </div>
