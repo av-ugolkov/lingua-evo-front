@@ -1,10 +1,54 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from "vue";
+
+import require from "@/scripts/require";
+
+
+let interval = null
+const loading = ref(true);
+const error = ref(null);
+const word = ref("");
+
+onMounted(() => {
+  fetchData();
+  interval = setInterval(fetchData, 60000);
+})
+
+onUnmounted(() => {
+  clearInterval(interval);
+})
+
+function fetchData() {
+  require('/word/get_random', {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ language_code: 'en' })
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      word.value = data["text"];
+    })
+    .catch((error) => {
+      error.value = error;
+      clearInterval(interval);
+    }).finally(() => {
+      loading.value = false;
+    });
+}
+</script>
+
 <template>
   <div class="container">
     <div class="grid-container">
-      <div class="loading" v-if="loading">
+      <div v-if="loading">
         Loading...
       </div>
-      <div v-else-if="error" class="error">
+      <div v-else-if="error">
         {{ error }}
       </div>
       <div v-else>
@@ -12,6 +56,7 @@
       </div>
     </div>
   </div>
+  <router-view></router-view>
 </template>
 
 <style scoped>
@@ -28,50 +73,3 @@
   }
 }
 </style>
-
-<script>
-
-let interval = null
-
-export default {
-  name: "MainPage",
-  data() {
-    return {
-      loading: true,
-      word: ""
-    };
-  },
-  created() {
-    this.fetchData();
-    interval = setInterval(this.fetchData, 5000);
-  },
-  // watch: {
-  //   $route: "http://localhost:5000/word/get_random"
-  // },
-  methods: {
-    fetchData() {
-      this.error = null
-      fetch('http://localhost:5000/word/get_random', {
-        method: "post",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ language_code: 'en' })
-      })
-        .then((response) => {
-          return response.json()
-        })
-        .then((data) => {
-          this.word = data["text"]
-        })
-        .catch((error) => {
-          this.error = error
-          clearInterval(interval)
-        }).finally(() => {
-          this.loading = false
-        });
-    }
-  }
-};
-</script>
