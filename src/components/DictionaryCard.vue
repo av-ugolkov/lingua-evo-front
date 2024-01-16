@@ -59,56 +59,36 @@ function openDictionary() {
 </script>
 
 <template>
-  <a class="grid-item">
-    <div class="item-title">{{ name }}</div>
-    <div class="item-content">
-      <li v-for="n in 9">
-        <p v-if="words[n]">{{ words[n] }}</p>
-      </li>
-      <p v-if="words.length > 9">...</p>
-    </div>
-  </a>
+  <div class="item-title">{{ name }}</div>
+  <div class="item-content">
+    <li v-for="n in 9">
+      <p v-if="words[n]">{{ words[n] }}</p>
+    </li>
+    <p v-if="words.length > 9">...</p>
+  </div>
 </template>
 
 <style scoped>
-.grid-item {
-  display: flow-root;
-  width: 200px;
-  min-width: 200px;
-  height: 300px;
-  background-color: lightgrey;
-  border: 2px solid black;
-  border-radius: 14px;
-  text-decoration: none;
-  color: black;
-  text-align: center;
-  font-size: 16px;
+.item-title {
+  padding-top: 5px;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
+}
 
-  .item-title {
-    padding-top: 5px;
-    font-weight: 600;
+.item-content {
+  padding: 10px;
+
+  li {
+    list-style: none;
+  }
+
+  p {
+    padding: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .item-content {
-    padding: 10px;
-
-    li {
-      list-style: none;
-    }
-
-    p {
-      padding: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
 }
 </style>

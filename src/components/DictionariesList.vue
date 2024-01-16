@@ -53,15 +53,15 @@ function addDictionary() {
 </script>
 <template>
     <div class="grid-container">
-        <a v-for="dictionary in dictionaries" :key="dictionary.Name">
-            <router-link :to="{ name: 'dictionary', params: { id: dictionary.Name } }">
-                <DictionaryCard :name="dictionary.Name" />
-            </router-link>
-        </a>
-        <a class="grid-item-add" @click="addDictionary()">
+        <router-link :to="{ name: 'dictionary', params: { id: dictionary.Name } }" v-for="dictionary in dictionaries"
+            :key="dictionary.Name" class="grid-item">
+            <DictionaryCard :name="dictionary.Name" />
+        </router-link>
+        <a @click="addDictionary()" class="grid-item">
             <div class="item-title">New Dictionary</div>
             <div class="item-content">+</div>
         </a>
+
     </div>
 </template>
 
@@ -73,7 +73,7 @@ function addDictionary() {
     grid-gap: 20px;
     list-style: none;
 
-    .grid-item-add {
+    .grid-item {
         display: inherit;
         width: 200px;
         height: 300px;
