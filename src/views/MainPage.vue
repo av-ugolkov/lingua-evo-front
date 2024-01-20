@@ -1,21 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-
 import HeaderPanel from '@/components/HeaderPanel.vue';
 import RandomWords from '@/components/RandomWords.vue';
-import refreshToken from '@/scripts/middleware/auth';
+import LoadingPage from '@/components/LoadingPage.vue';
 
-const loading = ref(false)
-
-onMounted(() => {
-  refreshToken(function (bearerToken, fingerprint) {
-    loading.value = true
-  })
-})
 </script>
 
 <template>
-  <div v-if="loading">
+  <LoadingPage>
     <header>
       <HeaderPanel />
     </header>
@@ -23,5 +14,5 @@ onMounted(() => {
     <main>
       <RandomWords />
     </main>
-  </div>
+  </LoadingPage>
 </template>

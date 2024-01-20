@@ -1,23 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-
 import HeaderPanel from '@/components/HeaderPanel.vue';
-import refreshToken from '@/scripts/middleware/auth';
-
-const loading = ref(false)
-
-onMounted(() => {
-    refreshToken(function (bearerToken, fingerprint) {
-        loading.value = true
-    })
-})
-
+import LoadingPage from '@/components/LoadingPage.vue';
 </script>
 
 <template>
-    <div v-if="loading">
+    <LoadingPage>
         <div>
             <HeaderPanel />
         </div>
-    </div>
+    </LoadingPage>
 </template>
