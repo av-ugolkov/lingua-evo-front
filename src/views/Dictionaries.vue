@@ -6,11 +6,7 @@ import LoadingPage from '@/components/LoadingPage.vue';
 
 <template>
     <LoadingPage>
-        <div>
-            <HeaderPanel />
-        </div>
-        <div>
-            <DictionariesList />
-        </div>
+        <HeaderPanel />
+        <DictionariesList />
     </LoadingPage>
 </template>

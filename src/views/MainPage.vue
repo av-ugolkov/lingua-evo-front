@@ -7,12 +7,7 @@ import LoadingPage from '@/components/LoadingPage.vue';
 
 <template>
   <LoadingPage>
-    <header>
-      <HeaderPanel />
-    </header>
-
-    <main>
-      <RandomWords />
-    </main>
+    <HeaderPanel />
+    <RandomWords />
   </LoadingPage>
 </template>

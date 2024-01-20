@@ -73,34 +73,36 @@ function logout() {
 </script>
 
 <template>
-    <nav class="navbar">
-        <div class="left-side">
-            <a href="/">
-                <img src="/src/components/icons/logo.png" alt="Lingua Evo logo" class="logo">
-                <span class="brand">Lingua Evo</span>
-            </a>
-        </div>
-        <div id="right-side" class="right-side">
-            <div class="border">
-                <router-link to="/contact" class="panelBtn">Contact</router-link>
-                |
-                <router-link to="/about" class="panelBtn">About</router-link>
+    <header>
+        <nav class="navbar">
+            <div class="left-side">
+                <a href="/">
+                    <img src="/src/components/icons/logo.png" alt="Lingua Evo logo" class="logo">
+                    <span class="brand">Lingua Evo</span>
+                </a>
             </div>
-            <div v-if="localStorage.getItem('access_token') == null" class="border">
-                <router-link to="/signup" class="panelBtn">Sign Up</router-link>
-                |
-                <router-link to="/signin" class="panelBtn">Sign In</router-link>
-            </div>
-            <div v-else class="border">
-                <router-link to="/dictionaries" class="panelBtn">Dictionary</router-link>
-                |
-                <router-link to="/account" class="panelBtn">{{ accountName }}</router-link>
-                |
-                <router-link to="/" @click="logout()" class="panelBtn">Logout</router-link>
-            </div>
+            <div id="right-side" class="right-side">
+                <div class="border">
+                    <router-link to="/contact" class="panelBtn">Contact</router-link>
+                    |
+                    <router-link to="/about" class="panelBtn">About</router-link>
+                </div>
+                <div v-if="localStorage.getItem('access_token') == null" class="border">
+                    <router-link to="/signup" class="panelBtn">Sign Up</router-link>
+                    |
+                    <router-link to="/signin" class="panelBtn">Sign In</router-link>
+                </div>
+                <div v-else class="border">
+                    <router-link to="/dictionaries" class="panelBtn">Dictionary</router-link>
+                    |
+                    <router-link to="/account" class="panelBtn">{{ accountName }}</router-link>
+                    |
+                    <router-link to="/" @click="logout()" class="panelBtn">Logout</router-link>
+                </div>
 
-        </div>
-    </nav>
+            </div>
+        </nav>
+    </header>
 </template>
 
 <style scoped>
