@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 
 import require from "@/scripts/require";
 
 
-let interval = null
-const loading = ref(true);
-const error = ref(null);
-const word = ref("");
+let interval = 0
+const loading = ref(true)
+const error = ref(null)
+const word = ref("")
 
 onMounted(() => {
   fetchData();

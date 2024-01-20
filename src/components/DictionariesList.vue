@@ -1,11 +1,24 @@
-<script setup>
-import { ref, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, onMounted, type Ref } from "vue";
 
+import router from '@/router';
 import DictionaryCard from './DictionaryCard.vue';
 import refreshToken from '@/scripts/middleware/auth'
 import require from '@/scripts/require'
 
-const dictionaries = ref([])
+
+class Dictionary {
+    ID: string
+    Name: string
+    UserID: string
+    constructor(id: string, name: string, userID: string) {
+        this.ID = id
+        this.Name = name
+        this.UserID = userID
+    }
+}
+
+const dictionaries: Ref<Dictionary[]> = ref([])
 
 onMounted(() => {
     getDictionaries()
@@ -26,8 +39,8 @@ function getDictionaries() {
             }
         }).then((response) => {
             return response.json();
-        }).then((data) => {
-            dictionaries.value = data;
+        }).then((data: Dictionary[]) => {
+            dictionaries.value = data
         }).catch((error) => {
             console.error('error:', error);
         })
@@ -36,6 +49,9 @@ function getDictionaries() {
 
 function addDictionary() {
     refreshToken(function (bearerToken, fingerprint) {
+        if (bearerToken == null || fingerprint == null) {
+            return
+        }
         require("/account/dictionary/add", {
             method: "post",
             headers: {
@@ -56,8 +72,8 @@ function addDictionary() {
 </script>
 <template>
     <div class="grid-container">
-        <router-link :to="{ name: 'dictionary', params: { id: dictionary.Name } }" v-for="dictionary in dictionaries"
-            :key="dictionary.Name" class="grid-item">
+        <router-link :to="{ name: 'dictionary', params: { name: dictionary.Name }, query: { id: dictionary.ID } }"
+            v-for="dictionary in dictionaries" :key="dictionary.Name" class="grid-item">
             <DictionaryCard :name="dictionary.Name" />
         </router-link>
         <a @click="addDictionary()" class="grid-item">

@@ -1,10 +1,11 @@
-<script setup>
-import refreshToken from "@/scripts/middleware/auth";
-import require from "@/scripts/require";
-import { onMounted, ref } from "vue";
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
+import refreshToken from '@/scripts/middleware/auth'
+import require from '@/scripts/require'
 
 const props = defineProps({
-  name: String
+  name: String,
 })
 const words = ref([])
 
@@ -36,28 +37,6 @@ function getDictionary() {
       console.error('error:', error);
     })
   })
-}
-
-function openDictionary() {
-  for (let i = 0; i < dictionaries.length; i++) {
-    const dict = dictionaries[i];
-    dict.addEventListener("click", (data) => {
-      let dict = data.currentTarget.getElementsByClassName("item-title")[0].innerHTML
-      require("/account/dictionary/" + dict, {
-        method: "post",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        }
-      }).then(responce => {
-        console.log(responce)
-      }).catch(error => {
-        console.error('error:', error);
-      })
-
-
-    })
-  }
 }
 
 </script>

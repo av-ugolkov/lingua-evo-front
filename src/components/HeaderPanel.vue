@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from "vue"
 
 import refreshToken from '@/scripts/middleware/auth'
@@ -54,6 +54,9 @@ function logout() {
     }
 
     refreshToken(function (bearerToken, fingerprint) {
+        if (bearerToken == null || fingerprint == null) {
+            return
+        }
         require("/auth/logout", {
             method: "get",
             headers: {

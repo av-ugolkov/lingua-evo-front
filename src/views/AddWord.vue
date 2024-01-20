@@ -39,7 +39,7 @@
 
 <style scoped></style>
 
-<script setup>
+<script setup lang="ts">
 import { reactive } from 'vue';
 
 import require from '@/scripts/require';
@@ -63,11 +63,11 @@ function addWord() {
         },
         body: JSON.stringify({
             native_word: newWord.nativeWord,
-            native_lang: nativeLang,
-            tran_word: tranWord,
-            tran_lang: tranLang,
-            example: example,
-            pronunciation: pronunciation
+            native_lang: newWord.nativeLang,
+            tran_word: newWord.tranWord,
+            tran_lang: newWord.tranLang,
+            example: newWord.example,
+            pronunciation: newWord.pronunciation
         })
     })
         .then((response) => {
@@ -76,7 +76,6 @@ function addWord() {
         })
         .then((data) => {
             console.log('Success:', data);
-            window.open(data["url"], "_self")
         })
         .catch((error) => {
             console.error('Error:', error);

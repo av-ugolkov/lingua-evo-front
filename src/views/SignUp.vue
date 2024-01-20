@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue"
 
-import router from '@/scripts/router';
-import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint.js';
+import router from '@/router';
+import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint';
 import require from "@/scripts/require";
 
 const email = ref("")
@@ -16,7 +16,7 @@ function signin() {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Fingerprint': getBrowserFingerprint(),
+            'Fingerprint': "" + getBrowserFingerprint(),
         },
         body: JSON.stringify({ email: email.value, username: username.value, password: password.value })
     })

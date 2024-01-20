@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue"
 
-import router from '@/scripts/router';
-import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint.js';
+import router from '@/router';
+import getBrowserFingerprint from '@/scripts/tools/get-browser-fingerprint';
 import require from "@/scripts/require";
 
 const username = ref('')
@@ -16,7 +16,7 @@ function signin() {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Authorization': "Basic " + btoa(username.value + ':' + password.value),
-            'Fingerprint': getBrowserFingerprint(),
+            'Fingerprint': "" + getBrowserFingerprint(),
         }
     }).then((response) => {
         return response.json();
@@ -45,7 +45,7 @@ function signin() {
 
             <button @click="signin()" type="button">Sign In</button>
             <label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
+                <input type="checkbox" name="remember"> Remember me
             </label>
         </div>
 

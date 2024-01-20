@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
 import refreshToken from '@/scripts/middleware/auth';
