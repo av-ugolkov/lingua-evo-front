@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue';
+import { onMounted, ref, inject, type Ref } from 'vue';
 
 import refreshToken from '@/scripts/middleware/auth'
 import require from '@/scripts/require'
@@ -15,12 +15,16 @@ interface Word {
   value: string
   pronunciation: string
 }
+const defaultDictionaryName = 'New Dictionary'
 const words: Ref<Word[]> = ref([])
 const title = ref<HTMLInputElement | null>(null)
 
+const callbackAdd = inject('callbackAdd', (id: string, name: string, tags: string[], user_id: string) => { })
+const callbackDel = inject('callbackDel', (id: string) => { })
+
 onMounted(() => {
   if (title.value != null)
-    title.value.value = props.name || "New Dictionary"
+    title.value.value = props.name || defaultDictionaryName
   getDictionary()
 })
 
@@ -71,7 +75,38 @@ function addDictionary() {
         'Authorization': bearerToken
       }
     }).then(responce => {
-      console.log(responce)
+      return responce.json();
+    }).then((data: any) => {
+      if (callbackAdd != null) {
+        callbackAdd(data['id'], data['name'], data['tags'], data['user_id'])
+        if (title.value != null)
+          title.value.value = defaultDictionaryName
+      }
+    }).catch(error => {
+      console.error('error:', error);
+    })
+  })
+}
+
+function removeDictionary() {
+  refreshToken(function (bearerToken, fingerprint) {
+    if (bearerToken == null || fingerprint == null) {
+      return
+    }
+    require("/account/dictionary?name=" + title.value?.value, {
+      method: "delete",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Fingerprint': fingerprint,
+        'Authorization': bearerToken
+      }
+    }).then(responce => {
+      if (responce.status == 200) {
+        if (callbackDel != null) {
+          callbackDel(props.id || '')
+        }
+      }
     }).catch(error => {
       console.error('error:', error);
     })
@@ -99,6 +134,9 @@ function changeTitleElement() {
           </div>
         </li>
       </router-link>
+      <div class="delete-dictionary" @click="removeDictionary()">
+        <img src="./../assets/icons/icons8/delete.svg" alt="delete" />
+      </div>
     </div>
     <div v-else @click="addDictionary()" class="add-dictionary">+</div>
   </div>
@@ -116,12 +154,12 @@ function changeTitleElement() {
   padding-bottom: 5px;
 
   .item-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding-left: 25px;
 
     .title-edit {
@@ -140,8 +178,6 @@ function changeTitleElement() {
     }
 
     img {
-      display: flex;
-      position: relative;
       width: 25px;
     }
   }
@@ -151,7 +187,8 @@ function changeTitleElement() {
     padding-top: 6px;
     vertical-align: top;
     max-width: 280px;
-    min-height: 250px;
+    min-height: 300px;
+    position: relative;
 
     .item {
       padding-bottom: 4px;
@@ -161,13 +198,33 @@ function changeTitleElement() {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
+    .delete-dictionary {
+      background-color: #f44336;
+      border-radius: 10px;
+      position: absolute;
+      max-height: fit-content;
+      width: 100%;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 30px;
+      }
+    }
   }
 
   .add-dictionary {
     font-size: 100px;
     font-weight: 800;
+    min-height: 300px;
+    display: flex;
     text-align: center;
-    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
   }
+
 }
 </style>

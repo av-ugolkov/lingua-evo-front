@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, type Ref } from "vue";
+import { ref, onMounted, provide, type Ref } from "vue";
 
 import DictionaryCard from './DictionaryCard.vue';
 import refreshToken from '@/scripts/middleware/auth'
@@ -14,7 +14,17 @@ interface Dictionary {
 }
 
 const dictionaries: Ref<Dictionary[]> = ref([])
-const title = ref<HTMLInputElement | null>(null)
+
+provide('callbackAdd', function (id: string, name: string, tags: string[], user_id: string) {
+    dictionaries.value.pop()
+    dictionaries.value.push({ id: id, name: name, tags: tags, user_id: user_id })
+    dictionaries.value.push({ id: "", name: "New Dictionary", tags: [], user_id: "" })
+})
+
+provide('callbackDel', function (id: string) {
+    var index = dictionaries.value.findIndex((item) => item.id === id)
+    dictionaries.value.splice(index, 1)
+})
 
 onMounted(() => {
     getDictionaries()
@@ -38,10 +48,10 @@ function getDictionaries() {
         }).then((data: any) => {
             JSON.parse(JSON.stringify(data)).forEach((item: any) => {
                 dictionaries.value.push({
-                    id: item["id"] || "",
-                    name: item["name"] || "",
-                    tags: item["tags"] || null,
-                    user_id: item["user_id"] || ""
+                    id: item["id"],
+                    name: item["name"],
+                    tags: item["tags"],
+                    user_id: item["user_id"],
                 })
             })
             dictionaries.value.push({
@@ -61,7 +71,7 @@ function getDictionaries() {
     <div class="grid-container">
         <div v-for="dictionary in dictionaries" :key="dictionary.name" class="grid-item">
             <DictionaryCard v-if="dictionary.id != ''" :id="dictionary.id" :name="dictionary.name" />
-            <DictionaryCard v-else :name="dictionary.name" :isCreate="true" />
+            <DictionaryCard v-else :name="dictionary.name" :isCreate="true" :callback="getDictionaries" />
         </div>
     </div>
 </template>
