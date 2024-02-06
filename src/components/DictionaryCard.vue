@@ -88,7 +88,7 @@ function changeTitleElement() {
   <div class="card">
     <div class="item-title">
       <input ref="title" name="title" class="title-edit" type="text" :maxlength="20" @click=changeTitleElement() />
-      <img src="./../assets/icons/icons8/edit.svg" width="20" alt="edit" />
+      <img src="./../assets/icons/icons8/edit.svg" alt="edit" />
     </div>
     <div v-if="!isCreate" class="item-content">
       <router-link style="text-decoration: none;" :to="{ name: 'dictionary', params: { dictName: name } }">
@@ -110,17 +110,25 @@ function changeTitleElement() {
   overflow: hidden;
   text-overflow: ellipsis;
   text-decoration: none;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 
   .item-title {
-    padding-top: 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 25px;
 
     .title-edit {
       width: 80%;
       font-size: 16px;
       font-weight: 600;
+      min-width: 230px;
       border: none;
       border-bottom-style: solid;
       border-bottom-width: 2px;
@@ -130,6 +138,12 @@ function changeTitleElement() {
       background-color: inherit;
       text-align: center;
     }
+
+    img {
+      display: flex;
+      position: relative;
+      width: 25px;
+    }
   }
 
   .item-content {
@@ -137,6 +151,7 @@ function changeTitleElement() {
     padding-top: 6px;
     vertical-align: top;
     max-width: 280px;
+    min-height: 250px;
 
     .item {
       padding-bottom: 4px;
