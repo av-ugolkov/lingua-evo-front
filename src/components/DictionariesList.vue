@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, type Ref } from "vue";
 
-import router from '@/router';
 import DictionaryCard from './DictionaryCard.vue';
 import refreshToken from '@/scripts/middleware/auth'
 import require from '@/scripts/require'
 
 
-class Dictionary {
-    ID: string
-    Name: string
-    UserID: string
-    constructor(id: string, name: string, userID: string) {
-        this.ID = id
-        this.Name = name
-        this.UserID = userID
-    }
+interface Dictionary {
+    id: string
+    name: string
+    tags: string[]
+    user_id: string
 }
 
 const dictionaries: Ref<Dictionary[]> = ref([])
+const title = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
     getDictionaries()
@@ -39,8 +35,15 @@ function getDictionaries() {
             }
         }).then((response) => {
             return response.json();
-        }).then((data: Dictionary[]) => {
-            dictionaries.value = data
+        }).then((data: any) => {
+            JSON.parse(JSON.stringify(data)).forEach((item: any) => {
+                dictionaries.value.push({
+                    id: item["id"] || "",
+                    name: item["name"] || "",
+                    tags: item["tags"] || null,
+                    user_id: item["user_id"] || ""
+                })
+            })
         }).catch((error) => {
             console.error('error:', error);
         })
@@ -52,15 +55,14 @@ function addDictionary() {
         if (bearerToken == null || fingerprint == null) {
             return
         }
-        require("/account/dictionary/add", {
+        require("/account/dictionary/name=" + title.value?.value, {
             method: "post",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Fingerprint': fingerprint,
                 'Authorization': bearerToken
-            },
-            body: JSON.stringify({ name: "New Dictionary" })
+            }
         }).then(responce => {
             console.log(responce)
         }).catch(error => {
@@ -69,17 +71,25 @@ function addDictionary() {
     })
 }
 
+function changeTitleElement() {
+    title.value?.select()
+}
+
 </script>
 <template>
     <div class="grid-container">
-        <router-link :to="{ name: 'dictionary', params: { name: dictionary.Name }, query: { id: dictionary.ID } }"
-            v-for="dictionary in dictionaries" :key="dictionary.Name" class="grid-item">
-            <DictionaryCard :name="dictionary.Name" />
+        <router-link :to="{ name: 'dictionary', params: { dictName: dictionary.name } }" v-for="dictionary in dictionaries"
+            :key="dictionary.name" class="grid-item">
+            <DictionaryCard :id="dictionary.id" :name="dictionary.name" />
         </router-link>
-        <a @click="addDictionary()" class="grid-item">
-            <div class="item-title">New Dictionary</div>
-            <div class="item-content">+</div>
-        </a>
+        <div class="grid-item">
+            <div class="item-title">
+                <input ref="title" name="title" class="title-edit" type="text" value="New Dictionary" :maxlength="20"
+                    @click=changeTitleElement() />
+                <img src="./../assets/icons/icons8/edit.svg" width="20" alt="edit" />
+            </div>
+            <div @click="addDictionary()" class="item-content">+</div>
+        </div>
 
     </div>
 </template>
@@ -88,14 +98,14 @@ function addDictionary() {
 .grid-container {
     padding: 50px 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 200px);
+    grid-template-columns: repeat(auto-fill, 300px);
     grid-gap: 20px;
     list-style: none;
 
     .grid-item {
         display: inherit;
-        width: 200px;
-        height: 300px;
+        width: 300px;
+        height: 350px;
         background-color: lightgrey;
         border: 2px solid black;
         border-radius: 14px;
@@ -110,10 +120,23 @@ function addDictionary() {
 
         .item-title {
             padding-top: 5px;
-            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+
+            .title-edit {
+                width: 80%;
+                font-size: 16px;
+                font-weight: 600;
+                border: none;
+                border-bottom-style: solid;
+                border-bottom-width: 2px;
+                text-decoration: none;
+                outline: none;
+                appearance: none;
+                background-color: inherit;
+                text-align: center;
+            }
         }
 
         .item-content {

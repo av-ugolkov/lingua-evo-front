@@ -33,7 +33,7 @@ function signin() {
 <template>
     <form id="sign_in_panel" method="post">
         <div class="img_container">
-            <img src="/src/components/icons/logo-grey.png" alt="Avatar" class="avatar">
+            <img src="/src/assets/icons/logo-grey.png" alt="Avatar" class="avatar">
         </div>
         <div class="container">
             <label for=username><b>Email/Username</b></label>

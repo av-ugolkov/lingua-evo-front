@@ -80,7 +80,7 @@ function logout() {
         <nav class="navbar">
             <div class="left-side">
                 <a href="/">
-                    <img src="/src/components/icons/logo.png" alt="Lingua Evo logo" class="logo">
+                    <img src="/src/assets/icons/logo.png" alt="Lingua Evo logo" class="logo">
                     <span class="brand">Lingua Evo</span>
                 </a>
             </div>
