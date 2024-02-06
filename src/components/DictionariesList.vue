@@ -44,53 +44,25 @@ function getDictionaries() {
                     user_id: item["user_id"] || ""
                 })
             })
+            dictionaries.value.push({
+                id: "",
+                name: "New Dictionary",
+                tags: [],
+                user_id: ""
+            })
         }).catch((error) => {
             console.error('error:', error);
         })
     })
 }
 
-function addDictionary() {
-    refreshToken(function (bearerToken, fingerprint) {
-        if (bearerToken == null || fingerprint == null) {
-            return
-        }
-        require("/account/dictionary/name=" + title.value?.value, {
-            method: "post",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Fingerprint': fingerprint,
-                'Authorization': bearerToken
-            }
-        }).then(responce => {
-            console.log(responce)
-        }).catch(error => {
-            console.error('error:', error);
-        })
-    })
-}
-
-function changeTitleElement() {
-    title.value?.select()
-}
-
 </script>
 <template>
     <div class="grid-container">
-        <router-link :to="{ name: 'dictionary', params: { dictName: dictionary.name } }" v-for="dictionary in dictionaries"
-            :key="dictionary.name" class="grid-item">
-            <DictionaryCard :id="dictionary.id" :name="dictionary.name" />
-        </router-link>
-        <div class="grid-item">
-            <div class="item-title">
-                <input ref="title" name="title" class="title-edit" type="text" value="New Dictionary" :maxlength="20"
-                    @click=changeTitleElement() />
-                <img src="./../assets/icons/icons8/edit.svg" width="20" alt="edit" />
-            </div>
-            <div @click="addDictionary()" class="item-content">+</div>
+        <div v-for="dictionary in dictionaries" :key="dictionary.name" class="grid-item">
+            <DictionaryCard v-if="dictionary.id != ''" :id="dictionary.id" :name="dictionary.name" />
+            <DictionaryCard v-else :name="dictionary.name" :isCreate="true" />
         </div>
-
     </div>
 </template>
 
@@ -109,42 +81,7 @@ function changeTitleElement() {
         background-color: lightgrey;
         border: 2px solid black;
         border-radius: 14px;
-        text-decoration: none;
-        color: black;
-        text-align: center;
-        font-size: 16px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
         cursor: pointer;
-
-        .item-title {
-            padding-top: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            .title-edit {
-                width: 80%;
-                font-size: 16px;
-                font-weight: 600;
-                border: none;
-                border-bottom-style: solid;
-                border-bottom-width: 2px;
-                text-decoration: none;
-                outline: none;
-                appearance: none;
-                background-color: inherit;
-                text-align: center;
-            }
-        }
-
-        .item-content {
-            padding: 10px;
-            font-size: 100px;
-            font-weight: 800;
-            text-align: center;
-        }
     }
 }
 </style>
