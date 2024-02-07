@@ -4,7 +4,7 @@ import { onMounted, ref, inject, type Ref } from 'vue';
 import refreshToken from '@/scripts/middleware/auth'
 import require from '@/scripts/require'
 
-const countRequestWords = 6
+const countRequestWords = 7
 
 const props = defineProps({
   id: String,
@@ -113,8 +113,37 @@ function removeDictionary() {
   })
 }
 
-function changeTitleElement() {
+function selectTitle() {
   title.value?.select()
+}
+
+function renameDictionary() {
+  refreshToken(function (bearerToken, fingerprint) {
+    if (bearerToken == null || fingerprint == null) {
+      return
+    }
+
+    require("/account/dictionary?name=" + title.value?.value, {
+      method: "put",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Fingerprint': fingerprint,
+        'Authorization': bearerToken
+      },
+      body: JSON.stringify({ id: props.id })
+    }).then(responce => {
+      if (responce.status == 200) {
+        console.log('Success rename dictionary');
+      }
+    }).catch(error => {
+      console.error('error:', error);
+    })
+  })
+}
+
+function editDictionary() {
+  console.error('not implemented');
 }
 
 </script>
@@ -122,11 +151,12 @@ function changeTitleElement() {
 <template>
   <div class="card">
     <div class="item-title">
-      <input ref="title" name="title" class="title-edit" type="text" :maxlength="20" @click=changeTitleElement() />
-      <img src="./../assets/icons/icons8/edit.svg" alt="edit" />
+      <input ref="title" name="title" class="title-edit" type="text" :maxlength="20" @click=selectTitle()
+        @keyup.enter="renameDictionary()" v-on:blur="renameDictionary()" />
+      <img src="./../assets/icons/icons8/edit.svg" alt="edit" @click="editDictionary()" />
     </div>
-    <div v-if="!isCreate" class="item-content">
-      <router-link style="text-decoration: none;" :to="{ name: 'dictionary', params: { dictName: name } }">
+    <div v-if="!isCreate" class="content">
+      <router-link class="items" :to="{ name: 'dictionary', params: { dictName: name } }">
         <li v-for="word in words">
           <div class="item" v-if="word">
             <div>{{ word.value }}</div>
@@ -182,30 +212,36 @@ function changeTitleElement() {
     }
   }
 
-  .item-content {
-    font-size: 16px;
-    padding-top: 6px;
-    vertical-align: top;
-    max-width: 280px;
-    min-height: 300px;
+  .content {
+    display: flex;
     position: relative;
+    width: 280px;
+    height: 315px;
 
-    .item {
-      padding-bottom: 4px;
-      color: black;
-      white-space: nowrap;
+    .items {
+      margin-left: auto;
+      margin-right: auto;
       text-decoration: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      width: 280px;
+      font-size: 16px;
+      padding-top: 4px;
+
+      .item {
+        padding-bottom: 3px;
+        color: black;
+        white-space: nowrap;
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     .delete-dictionary {
-      background-color: #f44336;
-      border-radius: 10px;
       position: absolute;
+      bottom: 0px;
+      right: 0px;
+      border-radius: 10px;
       max-height: fit-content;
-      width: 100%;
-      bottom: 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -225,6 +261,5 @@ function changeTitleElement() {
     align-items: center;
     justify-content: center;
   }
-
 }
 </style>
