@@ -72,7 +72,6 @@ function addWord() {
     })
         .then((response) => {
             response.json();
-            console.log('Success response');
         })
         .then((data) => {
             console.log('Success:', data);

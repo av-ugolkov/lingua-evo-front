@@ -10,7 +10,6 @@ const username = ref("")
 const password = ref("")
 
 function signin() {
-    let responseStatus = 404
     require("/auth/signup", {
         method: "post",
         headers: {
@@ -20,14 +19,11 @@ function signin() {
         },
         body: JSON.stringify({ email: email.value, username: username.value, password: password.value })
     })
-        .then((response) => response.json())
-        .then((data) => {
-            if (responseStatus == 201) {
-                console.log('Success:', data)
+        .then((response) => {
+            if (response.status == 201) {
                 router.push('/')
             }
-        })
-        .catch((err) => {
+        }).catch((err) => {
             console.error('Error:', err)
         });
 }

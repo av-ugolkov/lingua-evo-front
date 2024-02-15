@@ -132,10 +132,6 @@ function renameDictionary() {
         'Authorization': bearerToken
       },
       body: JSON.stringify({ id: props.id })
-    }).then(responce => {
-      if (responce.status == 200) {
-        console.log('Success rename dictionary');
-      }
     }).catch(error => {
       console.error('error:', error);
     })
@@ -153,10 +149,10 @@ function editDictionary() {
     <div class="item-title">
       <input ref="title" name="title" class="title-edit" type="text" :maxlength="20" @click=selectTitle()
         @keyup.enter="renameDictionary()" v-on:blur="renameDictionary()" />
-      <img src="./../assets/icons/icons8/edit.svg" alt="edit" @click="editDictionary()" />
+      <img src="./../assets/icons/icons8/edit-48.png" alt="edit" @click="editDictionary()" />
     </div>
     <div v-if="!isCreate" class="content">
-      <router-link class="items" :to="{ name: 'dictionary', params: { dictName: name } }">
+      <router-link class="items" :to="{ name: 'dictionary', params: { name: name }, query: { id: id } }">
         <li v-for="word in words">
           <div class="item" v-if="word">
             <div>{{ word.value }}</div>
@@ -165,7 +161,7 @@ function editDictionary() {
         </li>
       </router-link>
       <div class="delete-dictionary" @click="removeDictionary()">
-        <img src="./../assets/icons/icons8/delete.svg" alt="delete" />
+        <img src="./../assets/icons/icons8/delete-48.png" alt="delete" />
       </div>
     </div>
     <div v-else @click="addDictionary()" class="add-dictionary">+</div>

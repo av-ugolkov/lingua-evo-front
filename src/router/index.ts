@@ -47,10 +47,13 @@ const router = createRouter({
       component: DictionariesVue
     },
     {
-      path: "/dictionary/:dictName",
+      path: "/dictionary/:name?",
       name: "dictionary",
       component: DictionaryVue,
-      props: true
+      props: (route) => ({
+        name: route.params.name,
+        id: route.query.id
+      }),
     },
   ]
 })
