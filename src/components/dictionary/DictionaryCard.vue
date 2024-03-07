@@ -6,11 +6,11 @@ import require from '@/scripts/require'
 
 const countRequestWords = 7
 
-const props = defineProps({
-  id: String,
-  name: String,
-  isCreate: Boolean,
-})
+const props = defineProps<{
+  id: string,
+  name: string,
+  isCreate: boolean,
+}>()
 interface Word {
   value: string
   pronunciation: string
@@ -23,8 +23,6 @@ const callbackAdd = inject('callbackAdd', (id: string, name: string, tags: strin
 const callbackDel = inject('callbackDel', (id: string) => { })
 
 onMounted(() => {
-  if (title.value != null)
-    title.value.value = props.name || defaultDictionaryName
   getDictionary()
 })
 
@@ -37,7 +35,7 @@ function getDictionary() {
       return
     }
 
-    let url = "/vocabulary/get_several_words?id=" + props.id + "&limit=" + countRequestWords
+    let url = "/vocabulary/get_several_words?dict_id=" + props.id + "&limit=" + countRequestWords
     require(url, {
       method: "get",
       headers: {
@@ -113,10 +111,6 @@ function removeDictionary() {
   })
 }
 
-function selectTitle() {
-  title.value?.select()
-}
-
 function renameDictionary() {
   refreshToken(function (bearerToken, fingerprint) {
     if (bearerToken == null || fingerprint == null) {
@@ -147,9 +141,9 @@ function editDictionary() {
 <template>
   <div class="card">
     <div class="item-title">
-      <input ref="title" name="title" class="title-edit" type="text" :maxlength="20" @click=selectTitle()
-        @keyup.enter="renameDictionary()" v-on:blur="renameDictionary()" />
-      <img src="./../assets/icons/icons8/edit-48.png" alt="edit" @click="editDictionary()" />
+      <input ref="title" class="title-edit" type="text" :value="name || defaultDictionaryName" :maxlength="20"
+       onfocus="this.select()" @keyup.enter="renameDictionary()" v-on:blur="renameDictionary()" />
+      <img src="/src/assets/icons/icons8/edit-48.png" alt="edit" @click="editDictionary()" />
     </div>
     <div v-if="!isCreate" class="content">
       <router-link class="items" :to="{ name: 'dictionary', params: { name: name }, query: { id: id } }">
@@ -161,7 +155,7 @@ function editDictionary() {
         </li>
       </router-link>
       <div class="delete-dictionary" @click="removeDictionary()">
-        <img src="./../assets/icons/icons8/delete-48.png" alt="delete" />
+        <img src="/src/assets/icons/icons8/delete-48.png" alt="delete" />
       </div>
     </div>
     <div v-else @click="addDictionary()" class="add-dictionary">+</div>

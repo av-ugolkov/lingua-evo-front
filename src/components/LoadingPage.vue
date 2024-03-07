@@ -2,10 +2,6 @@
 import { ref, onMounted } from 'vue';
 
 import refreshToken from '@/scripts/middleware/auth';
-
-const props = defineProps({
-    child: String
-})
 const loading = ref(false)
 
 

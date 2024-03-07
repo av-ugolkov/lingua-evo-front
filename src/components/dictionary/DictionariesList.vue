@@ -70,8 +70,8 @@ function getDictionaries() {
 <template>
     <div class="grid-container">
         <div v-for="dictionary in dictionaries" :key="dictionary.name" class="grid-item">
-            <DictionaryCard v-if="dictionary.id != ''" :id="dictionary.id" :name="dictionary.name" />
-            <DictionaryCard v-else :name="dictionary.name" :isCreate="true" />
+            <DictionaryCard v-if="dictionary.id != ''" :id="dictionary.id" :name="dictionary.name" :isCreate="false" />
+            <DictionaryCard v-else :id="''" :name="dictionary.name" :isCreate="true" />
         </div>
     </div>
 </template>
