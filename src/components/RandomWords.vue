@@ -19,7 +19,7 @@ onUnmounted(() => {
 })
 
 function fetchData() {
-  require('/word/get_random?language_code=en', {
+  require('/word/random?language_code=en', {
     method: 'get',
     headers: {
       'Accept': 'application/json',
